@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:qrcode_app/app/controllers/auth_controller.dart';
 
+import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   LoginView({super.key});
 
-  final TextEditingController emailC = TextEditingController();
-  final TextEditingController passC = TextEditingController();
+  final TextEditingController emailC =
+      TextEditingController(text: "admin@gmail.com");
+  final TextEditingController passC = TextEditingController(text: "admin123");
+
+  final AuthController authC = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +64,34 @@ class LoginView extends GetView<LoginController> {
             height: 30,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              if (controller.isLoading.isFalse) {
+                if (emailC.text.isNotEmpty && passC.text.isNotEmpty) {
+                  controller.isLoading(true);
+
+                  Map<String, dynamic> hasil =
+                      await authC.login(emailC.text, passC.text);
+                  controller.isLoading(false);
+
+                  if (hasil["error"] == true) {
+                    Get.snackbar("Error", hasil["message"]);
+                  } else {
+                    Get.offAllNamed(Routes.home);
+                  }
+                } else {
+                  Get.snackbar("Error", "Email dan password wajib diisi.");
+                }
+              }
+            },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(9),
               ),
               padding: const EdgeInsets.symmetric(vertical: 20),
             ),
-            child: const Text("LOGIN"),
+            child: Obx(
+              () => Text(controller.isLoading.isFalse ? "LOGIN" : "LOADING..."),
+            ),
           )
         ],
       ),
