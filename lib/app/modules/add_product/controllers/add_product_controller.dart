@@ -18,8 +18,6 @@ class AddProductController extends GetxController {
         "message": "Berhasil menambah product.",
       };
     } catch (e) {
-      // Eror General
-      print(e);
       return {
         "error": true,
         "message": "Tidak dapat menambah product.",

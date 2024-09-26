@@ -17,9 +17,22 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
+    if (Get.arguments != null) {
+      String message = Get.arguments["message"] ?? "";
+      String type = Get.arguments["type"] ?? "info";
+
+      if (type == "success") {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.snackbar(
+            "Success",
+            message,
+          );
+        });
+      }
+    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('LoginView'),
+        title: const Text('LOGIN'),
         centerTitle: true,
       ),
       body: ListView(
@@ -76,7 +89,11 @@ class LoginView extends GetView<LoginController> {
                   if (hasil["error"] == true) {
                     Get.snackbar("Error", hasil["message"]);
                   } else {
-                    Get.offAllNamed(Routes.home);
+                    // Pass a success message when navigating to the home page
+                    Get.offAllNamed(Routes.home, arguments: {
+                      "message": "Login Successful",
+                      "type": "success",
+                    });
                   }
                 } else {
                   Get.snackbar("Error", "Email dan password wajib diisi.");

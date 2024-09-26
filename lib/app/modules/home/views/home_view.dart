@@ -11,6 +11,19 @@ class HomeView extends GetView<HomeController> {
   final AuthController authC = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
+    if (Get.arguments != null) {
+      String message = Get.arguments["message"] ?? "";
+      String type = Get.arguments["type"] ?? "info";
+
+      if (type == "success") {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.snackbar(
+            "Success",
+            message,
+          );
+        });
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('HOME'),
@@ -45,9 +58,7 @@ class HomeView extends GetView<HomeController> {
             case 2:
               title = "QR CODE";
               icon = Icons.qr_code;
-              onTap = () {
-                print("Open Camera");
-              };
+              onTap = () {};
               break;
             case 3:
               title = "Catalog";
@@ -74,7 +85,7 @@ class HomeView extends GetView<HomeController> {
                       size: 50,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(title),
@@ -85,13 +96,35 @@ class HomeView extends GetView<HomeController> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Map<String, dynamic> hasil = await authC.logout();
-          if (hasil["error"] == false) {
-            Get.offAllNamed(Routes.login);
-          } else {
-            Get.snackbar("Error", hasil["error"]);
-          }
+        onPressed: () {
+          Get.defaultDialog(
+            title: "Logout Confirmation",
+            middleText: "Are you sure you want to log out?",
+            textConfirm: "Yes",
+            textCancel: "No",
+            confirmTextColor: Colors.white,
+            onConfirm: () async {
+              Map<String, dynamic> result = await authC.logout();
+
+              if (result["error"] == false) {
+                // Pass the message when navigating to the login page
+                Get.offAllNamed(Routes.login, arguments: {
+                  "message": "Logout Successful",
+                  "type": "success",
+                });
+              } else {
+                Get.snackbar(
+                  "Error",
+                  result["message"] ?? "Logout failed, please try again.",
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }
+              Get.back();
+            },
+            onCancel: () {
+              Get.back();
+            },
+          );
         },
         child: const Icon(Icons.logout),
       ),

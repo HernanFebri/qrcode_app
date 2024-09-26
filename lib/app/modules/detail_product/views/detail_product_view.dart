@@ -131,49 +131,53 @@ class DetailProductView extends GetView<DetailProductController> {
             height: 20,
           ),
           TextButton(
-              onPressed: () {
-                Get.defaultDialog(
-                  title: "Delete Product",
-                  middleText: "Are you sure to delete this product ?",
-                  actions: [
-                    OutlinedButton(
-                      onPressed: () => Get.back(),
-                      child: const Text("Cancel"),
+            onPressed: () {
+              Get.defaultDialog(
+                title: "Delete Product",
+                middleText: "Are you sure to delete this product ?",
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Get.back(),
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // delete
+                      controller.isLoadingDelete(true);
+                      Map<String, dynamic> hasil =
+                          await controller.deleteProduct(product.productId);
+                      controller.isLoadingDelete(false);
+
+                      Get.back(); // tutup dialog
+                      Get.back(); // balik ke page all products
+
+                      Get.snackbar(
+                          hasil["error"] == true ? "Error" : "Berhasil",
+                          hasil["message"],
+                          duration: const Duration(seconds: 2));
+                    },
+                    child: Obx(
+                      () => controller.isLoadingDelete.isFalse
+                          ? const Text("Delete")
+                          : Container(
+                              padding: const EdgeInsets.all(2),
+                              height: 15,
+                              width: 15,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 1,
+                              ),
+                            ),
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          // delete
-                          controller.isLoadingDelete(true);
-                          Map<String, dynamic> hasil =
-                              await controller.deleteProduct(product.productId);
-                          controller.isLoadingDelete(false);
-
-                          Get.back(); // tutup dialog
-                          Get.back(); // balik ke page all products
-
-                          Get.snackbar(
-                              hasil["error"] == true ? "Error" : "Berhasil",
-                              hasil["message"],
-                              duration: const Duration(seconds: 2));
-                        },
-                        child: Obx(() => controller.isLoadingDelete.isFalse
-                            ? const Text("Delete")
-                            : Container(
-                                padding: const EdgeInsets.all(2),
-                                height: 15,
-                                width: 15,
-                                child: const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 1,
-                                ),
-                              )))
-                  ],
-                );
-              },
-              child: Text(
-                "Delete Product",
-                style: TextStyle(color: Colors.red.shade900),
-              ))
+                  )
+                ],
+              );
+            },
+            child: Text(
+              "DELETE PRODUCT",
+              style: TextStyle(color: Colors.red.shade900),
+            ),
+          )
         ],
       ),
     );

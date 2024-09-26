@@ -32,9 +32,11 @@ class MyApp extends StatelessWidget {
     return StreamBuilder(
         stream: auth.authStateChanges(),
         builder: (context, snapAuth) {
-          if (snapAuth.connectionState == ConnectionState.waiting)
+          if (snapAuth.connectionState == ConnectionState.waiting) {
             return const LoadingScreen();
+          }
           return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(useMaterial3: false),
             title: "QR Code",
             initialRoute: snapAuth.hasData ? Routes.home : Routes.login,

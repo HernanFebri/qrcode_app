@@ -122,8 +122,9 @@ class HomeController extends GetxController {
                       child: pw.Text(
                         "No",
                         textAlign: pw.TextAlign.center,
-                        style: const pw.TextStyle(
+                        style: pw.TextStyle(
                           fontSize: 10,
+                          fontWeight: pw.FontWeight.bold,
                         ),
                       ),
                     ),
