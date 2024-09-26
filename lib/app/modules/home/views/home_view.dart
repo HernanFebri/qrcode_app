@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:qrcode_app/app/controllers/auth_controller.dart';
 
+import '../../../controllers/auth_controller.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 
@@ -14,7 +13,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeView'),
+        title: const Text('HOME'),
         centerTitle: true,
       ),
       body: GridView.builder(
@@ -54,7 +53,7 @@ class HomeView extends GetView<HomeController> {
               title = "Catalog";
               icon = Icons.document_scanner_outlined;
               onTap = () {
-                print("Open PDF");
+                controller.downloadCatalog();
               };
               break;
           }
