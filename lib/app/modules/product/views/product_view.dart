@@ -52,7 +52,7 @@ class ProductView extends GetView<ProductController> {
                     },
                     borderRadius: BorderRadius.circular(9),
                     child: Container(
-                      height: 100,
+                      height: 120,
                       padding: const EdgeInsets.all(20),
                       child: Row(
                         children: [
